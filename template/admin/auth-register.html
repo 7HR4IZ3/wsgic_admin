@@ -1,0 +1,55 @@
+{% extends 'admin/layouts/master-auth.html' %}
+{%  set title = "Sign up" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-7 col-sm-12 mx-auto">
+            <div class="card pt-4">
+                <div class="card-body">
+                    <div class="text-center mb-5">
+                        <img src="{{ route('adminstatic', path='images/favicon.svg') }}" height="48" class='mb-4'>
+                        <h3>Sign Up</h3>
+                        <p>Please fill the form to register.</p>
+                    </div>
+                    <form action="{{ route('admin_register') }}" method="post">
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="username">Username or Email</label>
+                                    <input type="text" id="username" class="form-control" name="login">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" class="form-control" name="password2">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="password2">Password Again</label>
+                                    <input type="password" id="password" class="form-control" name="password2">
+                                </div>
+                            </div>
+                            <a href="{{ route('admin_login') }}">Have an account? Login</a>
+                        <div class="clearfix">
+                            <button class="btn btn-primary float-right" type="submit">Submit</button>
+                        </div>
+                    </form>
+                    <div class="divider">
+                        <div class="divider-text">OR</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button class="btn btn-block mb-2 btn-primary"><i data-feather="facebook"></i> Facebook</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-block mb-2 btn-secondary"><i data-feather="github"></i> Github</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

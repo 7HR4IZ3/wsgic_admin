@@ -1,0 +1,216 @@
+{% set title = panel.name %}
+{% set filename = route("admin_single", url=panel.url) %}
+
+{% extends 'admin/layouts/master.html' %}
+{% block content %}
+
+{% if id %}
+    {% set value = panel.model.objects.get(id=id) %}
+{% endif %}
+
+{% if value %}
+    {% set value = value[0] %}
+{% else %}
+    {% set value = {} %}
+{% endif %}
+
+{% set oldinputs = request.oldinputs %}
+
+<div class="main-content container-fluid">
+    <section class="section">
+        {% if not request.is_popup %}
+        <div class="card">
+            <div class="card-header">
+                <h2><b>{{ panel.name }}</b></h2>
+            </div>
+            {% with panel=panel, columns=panel.columns, apply_data=panel.apply_data, data=panel.model.objects.get(), apply_title=panel.apply_title, panels=panels, url=panel.url %}
+                {% include panel.single_template %}
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        <div class="d-md-flex flex-md-row">
+            <div class="col-12 col-md-8 mr-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Manage {{ panel.name }}</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form form-horizontal" action="{{ route('admin_single', url=panel.url) }}" method="post" style='display: block' enctype="multipart/form-data">
+                                <div class="form-group columns">
+                                    <!-- <div class="row"> -->
+                                        {% for column in panel.create_columns %}
+
+                                        <div class="col-md-4">
+                                            {% if not panel.create_columns[column].no_label %}
+                                            <label class="col-form-label" for="{{ column+'_create' }}">{{ panel.create_columns[column].get_label() }}</label>
+                                            {% endif %}
+                                        </div>
+                                    {% set attrs = panel.create_columns[column].get_attrs() %}
+                                        {% if oldinputs.get(column) %}
+                                        {{ oldinputs.get(column) }}
+                                            {{ attrs.__setitem__('value', oldinputs.get(column)) or "" }}
+                                        {% endif %}
+                                        <div class="col mt-1">
+                                            {{ panel.create_columns[column].form(class=panel.name+"_"+column+"_create form-control" + (" is-invalid" if panel.create_columns[column].has_error() else ""), name=column, placeholder=column.replace("_", " ").title(), required=(not panel.create_columns[column].null and not panel.create_columns[column].default and not panel.create_columns[column].pk), **attrs) }}
+                                        
+<!--                                         <div class="valid-feedback"> Looks good! </div>
+<div class="invalid-feedback"> Please use a valid email </div> -->
+                                        {% set errors = panel.create_columns[column].errors() %}
+                                        {% if errors %}
+                                        {% for error in errors %}
+                                        <p><small class="text-muted" style="color: red">{{ error }}</small></p>
+                                        {% endfor %}
+
+                                        {% else %}
+
+                                        {% for helper_text in panel.create_columns[column].helper_texts %}
+                                        <p><small class="text-muted">{{ helper_text }}</small></p>
+                                        {% endfor %}
+
+                                        {% endif %}
+                                        </div>
+
+                                        {% endfor %}
+                                        <input name="__action" value="create" hidden/>
+                                    </div>
+                            </form>
+                            <form class="form form-horizontal" action="{{ route('admin_single', url=panel.url) }}" method="post" enctype="multipart/form-data" style="display: none">
+                                <div class="form-group columns">
+                                    {% if "id" not in panel.edit_columns %}
+                                        <div class="col">
+                                            <input class="form-control" name="id" value="{{ id }}" hidden/>
+                                        </div>
+                                    {% endif %}
+                                    {% for column in panel.edit_columns %}
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="{{ column+'_edit' }}">{{ panel.edit_columns[column].get_label() }}</label>
+                                    </div>
+                                    <div class="col">
+                                        {% set attrs = panel.edit_columns[column].get_attrs() %}
+                                        {% if value[column] %}
+                                            {{ attrs.__setitem__('value', value[column]) or "" }}
+                                        {% endif %}
+                                        {{ panel.edit_columns[column].form(class=panel.name+"_"+column+"_edit form-control", name=column, placeholder=column.replace("_", " ").title(), **attrs) }}
+                                    </div>
+                                    {% endfor %}
+                                    <input name="__action" value="edit" hidden/>
+                                </div>
+                            </form>
+                            <form class="form form-horizontal" action="{{ route('admin_single', url=panel.url) }}" method="post" enctype="multipart/form-data" style="display: none">
+                                <div class="form-group columns">
+                                    {% for column in panel.delete_columns %}
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="{{ column+'_delete' }}">{{ panel.delete_columns[column].get_label() }}</label>
+                                    </div>
+                                    <div class="col">
+                                        {{ panel.delete_columns[column].form(class=panel.name+"_"+column+"_delete form-control", name=column, placeholder=column.replace("_", " ").title(), **panel.delete_columns[column].get_attrs()) }}
+                                    </div>
+                                    {% endfor %}
+                                    <input name="__action" value="delete" hidden/>
+                                </div>
+                            </form>
+                            <div class="col-sm-12 d-flex justify-content-end">
+                            <div class="input-group mb-1 mr-4 justify-self-start col">
+                                <label class="input-group-text" for="inputGroupSelect01">Action</label>
+                                <select class="form-select" id="inputGroupSelect01">
+                                    <option value="create" selected>Create</option>
+                                    <option value="edit" {% if id %} selected {% endif %}>Edit</option>
+                                    <option value="delete">Delete</option>
+                                </select>
+                            </div>
+                            <button onclick="submit()" class="btn btn-primary mr-1 mb-1">Done</button>
+                            <button onclick="reset()" class="btn btn-light-secondary mr-1 mb-1">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 d-md-flex flex-md-row">
+                {% if recent_actions%}
+                <div class="mb-4">
+                    <div class="card timeline">
+                      <div class="card-header">
+                        <strong class="card-title">Recent Activity</strong>
+                        <a class="float-right small text-muted" href="#!">View all</a>
+                      </div>
+                      {% for activity in recent_actions %}
+                      <div class="card-body">
+                        <div class="pb-3 timeline-item item- {{ 'warning' if "edited" in activity.body else "danger" if "deleted" in activity.body else "success" }}">
+                          <div class="pl-5">
+                            <div class="mb-1"><strong>@{{ activity.user.username }}</strong><span class="text-muted small mx-2">{{ activity.body.replace(activity.user.username, "").strip() }}</span></div>
+                            <p class="small text-muted">Creative Design <span class="badge badge-light">1h ago</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div> <!-- / .card-body -->
+                      {% endfor %}
+                    </div> <!-- / .card -->
+                </div>
+                {% endif %}
+                {% if activities%}
+                <div>
+                    {% with activities=activities %}
+                        {% include config.get("admin.templates.activities", "admin/activities.html") %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+            </div> <!-- end section -->
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ route('adminstatic', path='vendors/simple-datatables/style.css') }}">
+<!-- Include Choices CSS -->
+<link rel="stylesheet" href="{{ route('adminstatic', path='vendors/choices.js/choices.min.css') }}" />
+{% endblock %}
+{% block js %}
+<!-- Include Choices JavaScript -->
+<script src="{{ route('adminstatic', path='vendors/choices.js/choices.min.js') }}"></script>
+<script src="{{ route('adminstatic', path='vendors/simple-datatables/simple-datatables.js') }}"></script>
+<script src="{{ route('adminstatic', path='js/vendors.js') }}"></script>
+<script>
+    var select = document.getElementById("inputGroupSelect01");
+    var forms = document.getElementsByClassName("form-horizontal")
+    
+    function showForm(index) {
+        for (var i = 0; i < forms.length; i++) {
+            if (i == index) {
+                forms[i].style.display = "block"
+            } else {
+                forms[i].style.display = "none"
+            }
+        }
+    } 
+    
+    function submit() {
+        for (var i = 0; i < forms.length; i++) {
+            if (i == select.selectedIndex) {
+                if (forms[i].checkValidity()) {
+                    forms[i].submit();
+                } else {
+                    forms[i].reportValidity()
+                }
+                 {% if request.is_popup %}
+                 window.history.back()
+                 {% endif %}
+            }
+        }
+    } 
+    
+    function reset() {
+        for (var i = 0; i < forms.length; i++) {
+            if (i == select.selectedIndex) {
+                forms[i].reset()
+            }
+        }
+    } 
+    
+    select.addEventListener('change', () => {
+        showForm(select.selectedIndex)
+    })
+    showForm({{ 1 if id else 0 }})
+</script>
+{% endblock %}

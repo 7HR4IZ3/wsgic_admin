@@ -1,0 +1,34 @@
+
+<div class="sidebar-wrapper active">
+    <!-- <div class="sidebar-header">
+        <img src="{{ route('adminstatic', path='images/logo.svg') }}" alt="" srcset="">
+    </div> -->
+    <div class="sidebar-menu">
+        <ul class="menu">
+            {% for sidebarItem in sidebarItems %}
+            {% if sidebarItem.isTitle %}
+                <li class='sidebar-title'>{{sidebarItem.name}}</li>
+            {% else %}
+                <li class="sidebar-item {{ 'active' if (sidebarItem.url == filename) or (sidebarItem.key in filename) }} {{'has-sub' if 'submenu' in sidebarItem and len(sidebarItem['submenu']) > 0 }}">
+                    <a href="{{sidebarItem.url or '#'}}" class='sidebar-link'>
+                        <i data-feather="{{sidebarItem.icon}}" width="20"></i> 
+                        <span>{{sidebarItem.name}}</span>
+                    </a>
+                    {% if 'submenu' in sidebarItem and len(sidebarItem['submenu']) > 0 %}
+                    <ul class="submenu {{ 'active' if (sidebarItem.url == filename) or (sidebarItem.key in filename) }}">
+                        {% for sub in sidebarItem['submenu'] %}
+                        <li class="submenu-item {{ 'active' if sub.url == filename }}">
+                            <a href="{{ sub.url }}">{{ sub.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+
+            {% endif %}
+            {% endfor %}
+         
+        </ul>
+    </div>
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+</div>

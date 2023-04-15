@@ -1,0 +1,19 @@
+{% extends 'admin/layouts/error.html' %}
+{% set title = 'Forbidden' %}
+{% block content %}
+<div class="container text-center pt-32">
+    <h1 class='error-title'>{{ error.status }}</h1>
+    <p>{{ error.body }}</p>
+    {% if config.DEBUG and e.exception %}
+	  <h2>Exception:</h2>
+	  {% set exc = repr(e.exception) %}
+	  <pre>{{exc}}</pre>
+	{% endif %}
+	{% if config.DEBUG and e.traceback %}
+	  <h2>Traceback:</h2>
+	  <pre>{{e.traceback}}</pre>
+	{% endif %}
+    <a href="{{ request.previous_url }}" class='btn btn-secondary'>Go Back</a>
+    <a href="{{ route('admin_index') }}" class='btn btn-primary'>Go Home</a>
+</div>
+{% endblock %}

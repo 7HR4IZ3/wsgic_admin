@@ -1,0 +1,50 @@
+<!-- Striped rows -->
+<div class="col-md mr-2">
+  <div class="card shadow">
+    <div class="card-body">
+    <h5 class="card-title"><b><a href="{{ url }}">{{ name }}</a></b></h5>
+      <table class="table table-sm table-hover table-responsive table1">
+        <thead>
+          <tr>
+            <th>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chall">
+                <label class="custom-control-label" for="d1"></label>
+              </div>
+            </th>
+            {% for column in columns %}
+                <th>{{ apply_title(columns[column].get_label()) }}</th>
+            {% endfor %}
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for obj in data %}
+          <tr>
+            <td>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="d1">
+                <label class="custom-control-label" for="d1"></label>
+              </div>
+            </td>
+            {% for key in columns %}
+                <td>{{ apply_data(key, obj) }}</td>
+            {% endfor %}
+            <td>
+              <div class="dropdown">
+                <button class="btn btn-sm dropdown-toggle" type="button" id="dr1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="text-muted sr-only">Action</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dr1">
+                  {% for action in panel.get_actions() %}
+                  <a class="dropdown-item" href=="{{ route('admin_action', model=url, action=action, id=obj.id) }}">{{ action }}</a>
+                  {% endfor %}
+                </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> <!-- Striped rows -->

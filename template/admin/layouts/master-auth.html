@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - {{ web_title }}</title>
+    <link rel="stylesheet" href="{{ route('adminstatic', path='css/bootstrap.css') }}">
+    {% block styles %}{% endblock %}
+    <link rel="shortcut icon" href="{{ route('adminstatic', path='images/favicon.svg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ route('adminstatic', path='css/app.css') }}">
+</head>
+
+<body>
+    
+    <div id="auth">
+        {% for message in messages.get() %}
+            <div class="alert alert-light-success color-success alert-dismissible show fade">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+        {% endfor %}
+        
+        {% for error in errors.get() %}
+            <div class="alert alert-light-danger color-danger alert-dismissible show fade">
+                    {{ error }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ route('adminstatic', path='js/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ route('adminstatic', path='js/app.js') }}"></script>
+    {% block js %}{% endblock %}
+    <script src="{{ route('adminstatic', path='js/main.js') }}"></script>
+</body>
+
+</html>

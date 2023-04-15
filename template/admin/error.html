@@ -1,0 +1,12 @@
+{% extends 'admin/layouts/error.html' %}
+{% set title = error.status %}
+{% block content %}
+<div class="container text-center pt-32">
+    <h1 class='error-title'>{{ error.status[:4] }}</h1>
+    <h2>{{ error.status[4:] }}</h2>
+    <hr/>
+    <p>{{ error.body }}</p>
+    <button onclick="window.history.back()" class='btn btn-secondary'>Go Back</button>
+    <a href="{{ route('admin_index') }}" class='btn btn-primary'>Go Home</a>
+</div>
+{% endblock %}

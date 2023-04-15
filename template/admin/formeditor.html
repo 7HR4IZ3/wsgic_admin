@@ -1,0 +1,36 @@
+{% set id = load("random:randint")(0, 10000) %}
+    <section class="section">
+        <div class="">
+            <div class="">
+                <div id="quilleditor-container{{ id }}">
+                </div>
+                <textarea name="{{ attrs.name }}" id="{{ attrs.id }}" class="{{ attrs.class }} quilleditor{{ id }}" style="display: none" rows="5"></textarea>
+            </div>
+        </div>
+    </section>
+
+{% block styles %}
+<link rel="stylesheet" href="{{ route('adminstatic', path='vendors/quill/quill.snow.css') }}">
+<link rel="stylesheet" href="{{ route('adminstatic', path='vendors/quill/quill.bubble.css') }}">
+{% endblock %}
+{% block js %}
+<script src="{{ route('adminstatic', path='vendors/quill/quill.min.js') }}"></script>
+<script>
+    var quill{{ id }} = new Quill("#quilleditor-container{{ id }}", JSON.parse('{{ editorconfig }}'));
+    var value = "{{ attrs.value }}"
+    try {
+        value = JSON.parse(value);
+    } catch (err) {
+    }
+
+    if (value.editor) {
+        quill{{ id }}.setContents(value.editor)
+    } else if (value) {
+        quill{{ id }}.setText(value)
+    }
+    quill{{ id }}.on("text-change", (delta, old, other) => {
+        var val = JSON.stringify({"editor": quill{{ id }}.getContents(), "raw": quill{{ id }}.getText()})
+        document.getElementsByClassName("quilleditor{{ id }}")[0].innerHTML = val
+    })
+</script>
+{% endblock %}

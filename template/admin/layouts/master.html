@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Wsgic</title>
+    {% block stylesfirst %}{% endblock %}
+    <link rel="stylesheet" href="{{ route('adminstatic', path='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ route('adminstatic', path='css/feather.css') }}">
+    {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="{{ route('adminstatic', path='vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ route('adminstatic', path='css/app.css') }}">
+    <link rel="shortcut icon" href="{{ route('adminstatic', path='images/favicon.svg') }}" type="image/x-icon">
+    {% include 'styles.html' ignore missing %}
+    {% include 'headscripts.html' ignore missing %}
+</head>
+<body>
+    <div id="app">
+        {% if not request.is_popup %}
+        <div id="sidebar" class='active'>
+            {% with filename=filename %}
+            {% include "admin/layouts/sidebar.html" %}
+            {% endwith %}
+        </div>
+        {% endif %}
+        <div id="main">
+             {% if not request.is_popup %}
+            <nav class="navbar navbar-header navbar-expand navbar-light">
+                <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+                <button class="btn navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav d-flex align-items-center navbar-light ml-auto">
+                        <li class="dropdown nav-icon">
+                            <a href="#" data-toggle="dropdown" class="nav-link  dropdown-toggle nav-link-lg nav-link-user">
+                                <div class="d-lg-inline-block">
+                                    <i data-feather="bell"></i>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-large">
+                                <div class="">
+                                    <div class="card shadow">
+                                      <div class="card-header">
+                                        <strong class="card-title">Notification List</strong>
+                                        <a class="float-right small text-muted" href="#!">View all</a>
+                                      </div>
+                                      <div class="card-body">
+                                        <div class="list-group list-group-flush my-n3">
+                                          <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                              <div class="col-auto">
+                                                <span class="fe fe-box fe-24"></span>
+                                              </div>
+                                              <div class="col">
+                                                <small><strong>Package has uploaded successfull</strong></small>
+                                                <div class="my-0 text-muted small">Package is zipped and uploaded</div>
+                                              </div>
+                                              <div class="col-auto">
+                                                <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                              <div class="col-auto">
+                                                <span class="fe fe-download fe-24"></span>
+                                              </div>
+                                              <div class="col">
+                                                <small><strong>Widgets are updated successfull</strong></small>
+                                                <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
+                                              </div>
+                                              <div class="col-auto">
+                                                <small class="badge badge-pill badge-light text-muted">2m ago</small>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                              <div class="col-auto">
+                                                <span class="fe fe-inbox fe-24"></span>
+                                              </div>
+                                              <div class="col">
+                                                <small><strong>Notifications have been sent</strong></small>
+                                                <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                                              </div>
+                                              <div class="col-auto">
+                                                <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                                              </div>
+                                            </div> <!-- / .row -->
+                                          </div>
+                                          <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                              <div class="col-auto">
+                                                <span class="fe fe-link fe-24"></span>
+                                              </div>
+                                              <div class="col">
+                                                <small><strong>Link was attached to menu</strong></small>
+                                                <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                                              </div>
+                                              <div class="col-auto">
+                                                <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                                              </div>
+                                            </div>
+                                          </div> <!-- / .row -->
+                                        </div> <!-- / .list-group -->
+                                      </div> <!-- / .card-body -->
+                                    </div> <!-- / .card -->
+                                  </div> <!-- / .col-md-3 -->
+                            </div>
+                        </li>
+                        <li class="dropdown nav-icon mr-2">
+                            <a href="#" data-toggle="dropdown" class="nav-link  dropdown-toggle nav-link-lg nav-link-user">
+                                <div class="d-lg-inline-block">
+                                    <i data-feather="mail"></i>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
+                                <a class="dropdown-item active" href="#"><i data-feather="mail"></i> Messages</a>
+                                <a class="dropdown-item" href="#"><i data-feather="settings"></i> Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ route('admin_logout') }}"><i data-feather="log-out"></i> Logout</a>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                                <div class="avatar mr-1">
+                                    <img src="" alt="" srcset="">
+                                </div>
+                                <div class="d-none d-md-block d-lg-inline-block">Hi, {{ request.user.username }}</div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
+                                <a class="dropdown-item active" href="#"><i data-feather="mail"></i> Messages</a>
+                                <a class="dropdown-item" href="#"><i data-feather="settings"></i> Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ route('admin_logout') }}"><i data-feather="log-out"></i> Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            {% endif %}
+
+            {% for message in messages.get() %}
+                <div class="alert alert-light-success color-success alert-dismissible show fade">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+            {% endfor %}
+            
+            {% for error in errors.get() %}
+                <div class="alert alert-light-danger color-danger alert-dismissible show fade">
+                        {{ error }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+            {% endfor %}
+
+            {% block content %}{% endblock %}
+             {% if not request.is_popup %}
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-left">
+                        <p>2020 &copy; Voler</p>
+                    </div>
+                    <div class="float-right">
+                        <p>Crafted with <span class='text-danger'><i data-feather="heart"></i></span> by <a href="http://ahmadsaugi.com">Ahmad Saugi</a></p>
+                    </div>
+                </div>
+            </footer>
+            {% endif %}
+        </div>
+    </div>
+    <script src="{{ route('adminstatic', path='js/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ route('adminstatic', path='vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ route('adminstatic', path='js/app.js') }}"></script>
+    {% block js %}{% endblock %}
+    <script src="{{ route('adminstatic', path='js/main.js') }}"></script>
+    {% include 'scripts.html' ignore missing %}
+    {% include 'footstyles.html' ignore missing %}
+</body>
+</html>

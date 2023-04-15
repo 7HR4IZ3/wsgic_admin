@@ -1,0 +1,27 @@
+
+  <div class="card shadow">
+    <div class="card-header">
+      <strong class="card-title float-left">Recent Activity</strong>
+      <a class="float-right small text-muted" href="#!">View all</a>
+    </div>
+    <div class="card-body">
+      <div class="list-group list-group-flush my-n3">
+          {% for item in activities %}
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-auto">
+              <div class="avatar avatar-sm mt-2">
+                <img src="{{ item.user.image.url }}" alt="..." class="avatar-img rounded-circle">
+              </div>
+            </div>
+            <div class="col">
+              <small><strong>{{ item.title }}</strong></small>
+              <div class="my-0 text-muted small">{{ item.body }}</div>
+              <small class="badge badge-light text-muted">{{ item.date.ctime() }}</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div> <!-- / .list-group -->
+    </div> <!-- / .card-body -->
+  </div> <!-- / .card -->

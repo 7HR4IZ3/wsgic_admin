@@ -1,0 +1,35 @@
+
+<div class="card-body">
+    {% for role in data %}
+    <div class="col-sm-4 col-md-4 mb-2 card shadow">
+        <div class="mb-4 card-body">
+            <div class="row items-align-center">
+                <div class="col-md-6 my-4">
+                    <p class="mb-0"><strong class="mb-0 text-uppercase text-muted">{{ role.role }}</strong></p>
+                    {% set count = panels.get("auth/user").model.objects.get(role=role.id) | length %}
+                    <h5>{{ count }} {{ "users" if count > 1 else "user"}}</h5>
+                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="col-md-6 my-4 text-center">
+                    <div lass="chart-box mx-4">
+                        <div id="radialbarWidget"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 border-top pt-3">
+                    <p class="mb-1"><strong class="text-muted">Level</strong></p>
+                    <h4 class="mb-0">{{ role.level }}</h4>
+                    <div class="{{ 'progress progress-success' if 100 >= role.level > 75 else 'progress progress-info' if 75 >= role.level > 50 else 'progress progress-primary' if 50 >= role.level > 25 else 'progress progress-danger' }}">
+                        <div class="progress-bar" role="progressbar" style="width: {{ role.level }}%" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div> <!-- .col -->
+                <div class="col-md-6 border-top pt-3">
+                    <p class="mb-1"><strong class="text-muted">Users</strong></p>
+                    <h4 class="mb-0"></h4>
+                    <p class="small text-muted mb-0"><span>-18.9% Last week</span></p>
+                </div> <!-- .col -->
+            </div>
+        </div> <!-- .card-body -->
+    </div> <!-- .card -->
+    {% endfor %}
+</div>

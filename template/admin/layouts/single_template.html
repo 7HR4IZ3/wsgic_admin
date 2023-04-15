@@ -1,0 +1,22 @@
+<div class="card-body">
+	<table class='table table-borderless table-responsive table-hover' id="table1">
+		<thead>
+			<tr>
+				<th>Action</th>
+				{% for column in columns %}
+				<th><b>{{ apply_title(columns[column].get_label()) }}</b></th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for obj in data %}
+			<tr>
+				<td><a href="{{ route('admin_single_id', url=url, id=obj.id) }}" ><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="pen-tool"></i></a></td>
+				{% for key in columns %}
+				<td>{{ apply_data(key, obj) }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

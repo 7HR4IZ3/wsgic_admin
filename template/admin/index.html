@@ -1,0 +1,213 @@
+{% set title = 'Dashboard' %}
+{% set filename = 'index.html' %}
+
+{% extends 'admin/layouts/master.html' %}
+{% set now = load("datetime:datetime").now() %}
+
+{% block content %}
+<div class="main-content container-fluid">
+    <div class="page-title">
+        <h3>{{ site_title or 'WSGIC Dashboard' }}</h3>
+        <p class="text-subtitle text-muted">{{ site_desc or 'A good dashboard to display your statistics' }}</p>
+    </div>
+    <section class="section">
+        <div class="row mb-2">
+            <div class="col-12 col-md-3">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3 d-flex justify-content-between'>
+                                <h3 class='card-title'>BALANCE</h3>
+                                <div class="card-right d-flex align-items-center">
+                                    <p>$50 </p>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="canvas1" style="height:100px !important"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3 d-flex justify-content-between'>
+                                <h3 class='card-title'>Revenue</h3>
+                                <div class="card-right d-flex align-items-center">
+                                    <p>$532,2 </p>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="canvas2" style="height:100px !important"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3 d-flex justify-content-between'>
+                                <h3 class='card-title'>ORDERS</h3>
+                                <div class="card-right d-flex align-items-center">
+                                    <p>1,544 </p>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="canvas3" style="height:100px !important"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3 d-flex justify-content-between'>
+                                <h3 class='card-title'>Sales Today</h3>
+                                <div class="card-right d-flex align-items-center">
+                                    <p>423 </p>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="canvas4" style="height:100px !important"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class='card-heading p-1 pl-3'>Sales</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 col-12">
+                                <div class="pl-3">
+                                    <h1 class='mt-5'>$21,102</h1>
+                                    {% set diff = Activity.count_monthly(now.month) - Activity.count_monthly(now.month - 1) %}
+                                    
+                                    <p class='text-xs'><span class="text-green"><i data-feather="bar-chart" width="15"></i> {{ diff }}</span> than last month</p>
+                                    <div class="legends">
+                                        <div class="legend d-flex flex-row align-items-center">
+                                            <div class='w-3 h-3 rounded-full bg-info mr-2'></div><span class='text-xs'>Last Month</span>
+                                        </div>
+                                        <div class="legend d-flex flex-row align-items-center">
+                                            <div class='w-3 h-3 rounded-full bg-blue mr-2'></div><span class='text-xs'>Current Month</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-12">
+                                <canvas id="activitybar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for group in panels.grouped %}
+                    <div class="row">
+                        <h2>{{ group }}</h2>
+                        <div class="d-md-flex flex-md-row flex-md-wrap align-content-stretch">
+                            {% for item in panels.grouped[group] %}
+                            {% set item = panels.grouped[group][item] %}
+                                {% with name=item.name, model=item.model, columns=item.columns, apply_data=item.apply_data, apply_title=item.apply_title, data=item.model.objects.get()[:5], panel=item, url=route('admin_single', url=item.url) %}
+                                    {% include item.template %}
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-4">
+                <div>
+                    {% with activities=activities %}
+                        {% include config.get("admin.templates.activities", "admin/activities.html") %}
+                    {% endwith %}
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Your Earnings</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="radialBars"></div>
+                        <div class="text-center mb-5">
+                            <h6>From last month</h6>
+                            <h1 class='text-green'>+$2,134</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ route('adminstatic', path='vendors/chartjs/Chart.min.css') }}">
+    <link rel="stylesheet" href="{{ route('adminstatic', path='vendors/simple-datatables/style.css') }}">
+{% endblock %}
+{% block js %}
+    <script src="{{ route('adminstatic', path='vendors/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ route('adminstatic', path='vendors/chartjs/Chart.min.js') }}"></script>
+    <script src="{{ route('adminstatic', path='vendors/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ route('adminstatic', path='js/pages/dashboard.js') }}"></script>
+
+    <script>
+        let table1 = document.getElementsByClassName('table1');
+        for (table in table1) {
+            new simpleDatatables.DataTable(table1[table]);
+        }
+    </script>
+    <script>
+        var ctxBar = document.getElementById("activitybar").getContext("2d");
+        var myBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec"],
+            datasets: [{
+            label: 'Activity',
+
+            backgroundColor: [{% for i in range(1, 12) %}{{ "chartColors.blue" if i == now.month else "chartColors.info" if i == (now.month - 1) else "chartColors.grey" }}, {% endfor %}],
+            data: [
+                
+            ]
+            }]
+        },
+        options: {
+            responsive: true,
+            barRoundness: 1,
+            title: {
+            display: false,
+            text: "Chart.js - Bar Chart with Rounded Tops (drawRoundedTopRectangle Method)"
+            },
+            legend: {
+            display:false
+            },
+            scales: {
+            yAxes: [{
+                ticks: {
+                beginAtZero: true,
+                suggestedMax: 40 + 20,
+                padding: 10,
+                },
+                gridLines: {
+                drawBorder: false,
+                }
+            }],
+            xAxes: [{
+                    gridLines: {
+                        display:false,
+                        drawBorder: false
+                    }
+                }]
+            }
+        }
+        });
+    </script>
+{% endblock %}

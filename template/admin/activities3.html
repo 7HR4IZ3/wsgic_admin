@@ -1,0 +1,27 @@
+
+  <div class="card shadow">
+    <div class="card-header">
+      <strong class="card-title">Recent Activity</strong>
+      <a class="float-right small text-muted" href="#!">View all</a>
+    </div>
+    <div class="card-body">
+      <div class="list-group list-group-flush my-n3">
+          {% for item in activities %}
+        <div class="list-group-item">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <span data-feather="{{ item.category.icon_cls }}"></span>
+            </div>
+            <div class="col">
+              <small><strong>{{ item.title }}</strong></small>
+              <div class="my-0 text-muted small">{{ item.body }}</div>
+            </div>
+            <div class="col-auto">
+              <small class="badge badge-pill badge-light text-muted">{{ item.date.ctime() }}</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div> <!-- / .list-group -->
+    </div> <!-- / .card-body -->
+  </div> <!-- / .card -->
